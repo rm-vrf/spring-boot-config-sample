@@ -113,30 +113,30 @@ $ curl http://localhost:8080/actuator/env
 
 Spring Boot 按照特定的顺序加载配置项，位置和顺序如下：
 
-1. DevTool 定义的配置项
-- `@TestPropertySource` 标签定义的配置项
-- `@SpringBootTest#properties` 标签定义的配置项
-- 启动参数
-- `SPRING_APPLICATION_JSON` 环境变量
-- `ServletConfig` 定义的 `init` 参数
-- `ServletContext` 定义的 `init` 参数
-- JNDI 属性
-- Java 系统属性，使用 `-Dkey=value` 定义，`System.getProperties()` 可以查看到
-- 操作系统环境变量
-- `RandomValuePropertySource` 定义的随机值
-- 带 `profile` 的外部配置文件
-- 带 `profile` 的内部配置文件
-- 不带 `profile` 的外部配置文件
-- 不带 `profile` 的内部配置文件
-- `@Configuration` 类型里面的 `@PropertySource` 标签定义的配置
-- `SpringApplication.setDefaultProperties` 方法设置的默认值
+1. `DevTool` 定义的配置项
+2. `@TestPropertySource` 标签定义的配置项
+3. `@SpringBootTest#properties` 标签定义的配置项
+4. 启动参数
+5. `SPRING_APPLICATION_JSON` 环境变量
+6. `ServletConfig` 定义的 `init` 参数
+7. `ServletContext` 定义的 `init` 参数
+8. JNDI 属性
+9. Java 系统属性，使用 `-Dkey=value` 定义，`System.getProperties()` 可以查看到
+10. 操作系统环境变量
+11. `RandomValuePropertySource` 定义的随机值
+12. 带 `profile` 的外部配置文件
+13. 带 `profile` 的内部配置文件
+14. 不带 `profile` 的外部配置文件
+15. 不带 `profile` 的内部配置文件
+16. `@Configuration` 类型里面的 `@PropertySource` 标签定义的配置
+17. `SpringApplication.setDefaultProperties` 方法设置的默认值
 
 内外部配置文件的加载位置和顺序如下：
 
 1. `config` 目录
-- `.` 当前目录
-- `classpath:/config`
-- `classpath:/`
+2. `.` 当前目录
+3. `classpath:/config`
+4. `classpath:/`
 
 ## Docker
 
