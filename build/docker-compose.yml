@@ -17,12 +17,9 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-#      placement:
-#        constraints:
-#          - node.role == manager
-#          - engine.labels.operatingsystem == ubuntu 14.04
-#        preferences:
-#          - spread: node.labels.zone
+      placement:
+        constraints:
+          - node.hostname == node-2
       resources:
         limits:
           cpus: '0.50'
