@@ -12,7 +12,7 @@
 
 最常见的配置方式就是配置文件，按照配置文件的存储位置，可以分为内部配置和外部配置：
 
-- 内部配置：部署文件是发布产物的一部分，存储在发布目录中，甚至打包在一起，比如 jar 包里面的 properties 文件。这些配置文件在不同的环境间不存在差异，其实他们可以看做是部署产物的一部分，比如 Spring 用来定义类创建和注入关系的 xml 文件。从运维的角度来看，尽管他们是配置文件，实际上和写死代码没有什么区别。反过来说，如果某个配置项在不同环境中是有差异的，就不应该放到内部；
+- 内部配置：部署文件是发布产物的一部分，存储在发布目录中，甚至打包在一起，比如 `jar` 包里面的 `properties` 文件。这些配置文件在不同的环境间不存在差异，其实他们可以看做是部署产物的一部分，比如 Spring 用来定义类创建和注入关系的 `xml` 文件。从运维的角度来看，尽管他们是配置文件，实际上和写死代码没有什么区别。反过来说，如果某个配置项在不同环境中是有差异的，就不应该放到内部；
 - 外部配置：不在部署产物内，需要在部署环境上修改。需要注意不要把这样的文件提交到代码控制系统，总是有人不小心这样做。
 
 ## 配置漂移
@@ -32,7 +32,7 @@
 - 环境变量：与启动参数相似，也是推荐的方式；
 - 配置服务：使用某种集中配置平台，比如 etcd、Zookeeper、Spring Cloud Config. 这些平台使用不同的协议，在数据结构、存储一致性方面有不同的设计思想，可以选择一个合适的。配置服务可以支持动态修改，比如 Spring Cloud Config 提供了 `refresh` 端口，可以调动这个端口在不重启进程的情况下修改配置项。
 
-## Spring Boot 配置方式
+## Spring Boot
 
 示例程序演示了 Spring Boot 配置方式，打包运行：
 
@@ -131,7 +131,7 @@ Spring Boot 按照特定的顺序加载配置项，位置和顺序如下：
 16. `@Configuration` 类型里面的 `@PropertySource` 标签定义的配置
 17. `SpringApplication.setDefaultProperties` 方法设置的默认值
 
-内外部配置文件的加载位置和顺序如下：
+配置文件加载位置和顺序如下：
 
 1. `config` 目录
 2. `.` 当前目录
@@ -140,13 +140,13 @@ Spring Boot 按照特定的顺序加载配置项，位置和顺序如下：
 
 ## Docker
 
-使用 `Dockerfile` 是在生产环境创建 Docker 镜像的唯一推荐方式，示例程序提供了 `Dockerfile` 样例。`Dockerfile` 将运行包和配置文件复制到镜像里：
+使用 `Dockerfile` 是在生产环境创建 Docker 镜像的唯一推荐方式，示例程序提供了 `build/dockerfile-config-sample` 文件。创建运行目录，将程序包和配置文件复制进去：
 
 ```shell
 RUN mkdir -p /opt/stack
 
-COPY target/spring-boot-config-sample-1.0.0-SNAPSHOT.jar /opt/stack/
-COPY ./conf.properties /opt/stack/
+ADD target/spring-boot-config-sample-1.0.0-SNAPSHOT.jar /opt/stack/
+ADD build/conf.properties /opt/stack/
 ```
 
 在环境变量和启动参数中注入配置项：
@@ -160,29 +160,16 @@ ENTRYPOINT ["java", \
     "--spring.config.name=application,conf"]
 ```
 
-定义了健康检查规则：
-
-```shell
-HEALTHCHECK --interval=30s --timeout=10s \
-    CMD curl -f http://localhost:8080/actuator/health || exit 1
-```
-
-`Dockerfile` 里面还对镜像系统进行了设置，提高了打开文件句柄数。Docker 是实现不可变服务器的最佳方式。
+`Dockerfile` 里面对镜像系统进行了设置，提高了打开文件句柄数。Docker 是实现不可变服务器的最佳方式。
 
 ```shell
 RUN ulimit -n 65536
 ```
 
-使用 `docker build` 命令制作镜像，第一次运行会下载一个 `primetoninc/jdk` 基础镜像，需要花一些时间：
+`Dockerfile` 定义了服务镜像，`docker-compose.yml` 定义了服务的部署位置和服务之间的依赖关系。使用 `docker-compose up` 命令运行服务，第一次运行会下载一个 `primetoninc/jdk` 基础镜像，需要花一些时间：
 
 ```shell
-docker build -t config-sample .
+$ docker-compose up
 ```
 
-使用 `docker run` 命令运行程序：
-
-```shell
-docker run -it -p 8080:8080 config-sample
-```
-
-在实际环境上可以使用 Kubernetes、Mesos 这样的平台管理和运行 Docker 镜像，完全可以避免直接登录服务器操作。
+在实际环境上可以使用 Kubernetes、Mesos 这一类平台管理和运行 Docker 镜像，完全可以避免直接登录服务器操作。

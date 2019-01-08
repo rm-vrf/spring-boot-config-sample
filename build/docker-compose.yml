@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+
+  config-sample:
+    build:
+      context: ../
+      dockerfile: build/dockerfile-config-sample
+    container_name: config-sample
+    ports:
+      - "8080:8080"
+    stop_signal: SIGUSR1
+    stop_grace_period: 1m30s
+    labels:
+      - java
+      - springboot
+    deploy:
+      mode: replicated
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.role == manager
+#          - engine.labels.operatingsystem == ubuntu 14.04
+#        preferences:
+#          - spread: node.labels.zone
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500M
+        reservations:
+          cpus: '0.25'
+          memory: 200M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+#    depends_on:
+#      - mysql
+#      - redis
