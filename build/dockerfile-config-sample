@@ -1,4 +1,4 @@
-FROM primetoninc/jdk:1.8
+FROM openjdk:8
 
 RUN ulimit -n 65536
 RUN mkdir -p /opt/stack

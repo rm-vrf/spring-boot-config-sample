@@ -166,7 +166,7 @@ ENTRYPOINT ["java", \
 RUN ulimit -n 65536
 ```
 
-`Dockerfile` 定义了服务镜像，`docker-compose.yml` 定义了服务的部署位置和服务之间的依赖关系。使用 `docker-compose up` 命令运行服务，第一次运行会下载一个 `primetoninc/jdk` 基础镜像，需要花一些时间：
+`Dockerfile` 定义了服务镜像，`docker-compose.yml` 定义了服务的部署位置和服务之间的依赖关系。使用 `docker-compose up` 命令运行服务，第一次运行会下载一个 `openjdk` 基础镜像，需要花一些时间：
 
 ```shell
 $ docker-compose up
